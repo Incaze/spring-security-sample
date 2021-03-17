@@ -6,6 +6,7 @@ import com.incaze.springsecuritysample.controller.request.RegistrationRequest;
 import com.incaze.springsecuritysample.controller.response.AuthResponse;
 import com.incaze.springsecuritysample.model.User;
 import com.incaze.springsecuritysample.service.UserService;
+import jdk.jshell.spi.ExecutionControl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,10 +23,9 @@ public class AuthController {
     @PostMapping("/register")
     public String registerUser(@RequestBody @Valid RegistrationRequest registrationRequest) {
         User user = new User();
-        try {
-            userService.findByLogin(user.getLogin());
+        User check = userService.findByLogin(registrationRequest.getLogin());
+        if (check != null) {
             return "User already exist";
-        } catch (Exception e) {
         }
         user.setPassword(registrationRequest.getPassword());
         user.setLogin(registrationRequest.getLogin());
@@ -34,8 +34,11 @@ public class AuthController {
     }
 
     @PostMapping("/auth")
-    public AuthResponse auth(@RequestBody AuthRequest request) {
+    public AuthResponse auth(@RequestBody AuthRequest request) throws Exception {
         User user = userService.findByLoginAndPassword(request.getLogin(), request.getPassword());
+        if (user == null) {
+           throw new Exception("Invalid login or password");
+        }
         String token = jwtProvider.generateToken(user.getLogin());
         return new AuthResponse(token);
     }
