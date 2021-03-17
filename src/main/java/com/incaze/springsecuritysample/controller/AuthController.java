@@ -22,6 +22,11 @@ public class AuthController {
     @PostMapping("/register")
     public String registerUser(@RequestBody @Valid RegistrationRequest registrationRequest) {
         User user = new User();
+        try {
+            userService.findByLogin(user.getLogin());
+            return "User already exist";
+        } catch (Exception e) {
+        }
         user.setPassword(registrationRequest.getPassword());
         user.setLogin(registrationRequest.getLogin());
         userService.saveUser(user);
