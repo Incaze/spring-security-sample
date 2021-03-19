@@ -7,7 +7,6 @@ import com.incaze.springsecuritysample.controller.response.AuthResponse;
 import com.incaze.springsecuritysample.exception.UserAlreadyExistException;
 import com.incaze.springsecuritysample.exception.UserNotFoundException;
 import com.incaze.springsecuritysample.model.User;
-import com.incaze.springsecuritysample.repository.UserModelRepository;
 import com.incaze.springsecuritysample.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;

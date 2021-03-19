@@ -18,11 +18,13 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public void saveUser(User user) {
+    public User saveUser(User user) {
         Role userRole = roleModelRepository.findByName("ROLE_USER");
         user.setRole(userRole);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userModelRepository.save(user);
+
+        return user;
     }
 
     public User findByLogin(String login) {
