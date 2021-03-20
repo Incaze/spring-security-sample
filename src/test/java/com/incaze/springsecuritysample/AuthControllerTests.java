@@ -83,11 +83,12 @@ public class AuthControllerTests {
     }
 
     @Test
-    public void givenValidRole_whenGetSecureRequest_thenForbidden() throws Exception {
+    public void givenValidRole_whenGetSecureRequest_thenOk() throws Exception {
         String accessToken = obtainAccessToken("adminchik", "adminchik");
         mockMvc.perform(get("/get/user")
                 .header("Authorization", "Bearer " + accessToken))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json;charset=UTF-8"));
     }
 
     @Test
