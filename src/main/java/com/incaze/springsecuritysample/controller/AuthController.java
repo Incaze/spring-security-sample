@@ -7,12 +7,13 @@ import com.incaze.springsecuritysample.controller.response.AuthResponse;
 import com.incaze.springsecuritysample.exception.UserAlreadyExistException;
 import com.incaze.springsecuritysample.exception.UserNotFoundException;
 import com.incaze.springsecuritysample.model.User;
+import com.incaze.springsecuritysample.service.RoleService;
 import com.incaze.springsecuritysample.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -47,4 +48,22 @@ public class AuthController {
         String token = jwtProvider.generateToken(user.getLogin());
         return new AuthResponse(token);
     }
+
+    @GetMapping("/admin/get")
+    public String getAdmin() {
+        return "Hi admin";
+    }
+
+    @GetMapping("/user/get")
+    public String getUser() {
+        return "Hi user";
+    }
+
+    @GetMapping("/get/{role}")
+    @ResponseBody
+    public List<User> getUserList(@PathVariable String role){
+        role = RoleService.getRoleWithDefaultPrefix(role);
+        return userService.findByRole(role);
+    }
+
 }

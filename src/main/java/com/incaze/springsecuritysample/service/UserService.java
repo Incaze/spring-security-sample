@@ -8,13 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService {
 
     @Autowired
     private UserModelRepository userModelRepository;
     @Autowired
-    private  RoleModelRepository roleModelRepository;
+    private RoleModelRepository roleModelRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -29,6 +31,11 @@ public class UserService {
 
     public User findByLogin(String login) {
         return userModelRepository.findByLogin(login);
+    }
+
+    public List<User> findByRole(String name) {
+        Role role = roleModelRepository.findByName(name);
+        return userModelRepository.findByRole(role);
     }
 
     public User findByLoginAndPassword(String login, String password) {
