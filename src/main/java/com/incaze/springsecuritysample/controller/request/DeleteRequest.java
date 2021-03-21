@@ -3,7 +3,6 @@ package com.incaze.springsecuritysample.controller.request;
 import lombok.Data;
 
 @Data
-public class AuthRequest {
+public class DeleteRequest {
     private String login;
-    private String password;
 }

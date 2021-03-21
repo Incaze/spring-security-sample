@@ -2,6 +2,7 @@ package com.incaze.springsecuritysample.controller;
 
 import com.incaze.springsecuritysample.config.jwt.JwtProvider;
 import com.incaze.springsecuritysample.controller.request.AuthRequest;
+import com.incaze.springsecuritysample.controller.request.DeleteRequest;
 import com.incaze.springsecuritysample.controller.request.RegistrationRequest;
 import com.incaze.springsecuritysample.controller.response.AuthResponse;
 import com.incaze.springsecuritysample.exception.UserAlreadyExistException;
@@ -14,39 +15,26 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-public class AuthController {
+public class RestExampleController {
     @Autowired
     private UserService userService;
-    @Autowired
-    private JwtProvider jwtProvider;
 
     @PostMapping("/register")
-    public String registerUser(@RequestBody @Valid RegistrationRequest registrationRequest) throws UserAlreadyExistException {
-        String login = registrationRequest.getLogin();
-        Optional<User> u = Optional.ofNullable(userService.findByLogin(login));
-        if (u.isPresent()) {
-            throw new UserAlreadyExistException(login);
-        }
-        
-        User user = new User();
-        user.setPassword(registrationRequest.getPassword());
-        user.setLogin(login);
-        userService.saveUser(user);
-        return "OK";
+    public User registerUser(@RequestBody @Valid RegistrationRequest request) throws UserAlreadyExistException {
+        return userService.registerUser(request);
     }
 
     @PostMapping("/auth")
-    public AuthResponse auth(@RequestBody AuthRequest request) throws Exception {
-        User user = userService.findByLoginAndPassword(request.getLogin(), request.getPassword());
-        if (user == null) {
-           throw new UserNotFoundException(request.getLogin());
-        }
+    public AuthResponse auth(@RequestBody AuthRequest request) throws UserNotFoundException {
+        return userService.authUser(request);
+    }
 
-        String token = jwtProvider.generateToken(user.getLogin());
-        return new AuthResponse(token);
+    @PostMapping("/delete")
+    @ResponseBody
+    public String delete(@RequestBody DeleteRequest request) throws UserNotFoundException {
+        return userService.deleteUser(request);
     }
 
     @GetMapping("/admin/get")
