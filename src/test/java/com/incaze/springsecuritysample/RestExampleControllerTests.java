@@ -4,13 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -170,22 +168,5 @@ public class RestExampleControllerTests {
         ObjectMapper objectMapper = new ObjectMapper();
 
         return objectMapper.writeValueAsString(body);
-    }
-
-    private String obtainAccessToken(String login, String password) throws Exception {
-        String content = getAuthData(login, password);
-
-        ResultActions result
-                = mockMvc.perform(post("/auth")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(content)
-                .accept("application/json;charset=UTF-8"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"));
-
-        String resultString = result.andReturn().getResponse().getContentAsString();
-
-        JacksonJsonParser jsonParser = new JacksonJsonParser();
-        return jsonParser.parseMap(resultString).get("token").toString();
     }
 }
